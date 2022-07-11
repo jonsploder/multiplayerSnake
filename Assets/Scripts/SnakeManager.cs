@@ -19,17 +19,52 @@ public class SnakeManager : MonoBehaviour
     private Vector2 _position;
     public AppleSpawner appleSpawner;
     public Queue<GameObject> snakeBody = new Queue<GameObject>();
+    KeyCode lastValidKeyPress;
+    SnakePart currentHead;
 
     void Start()
     {
         _direction = MoveDirection.Up;
         GameObject appleSpawnerObject = GameObject.Find("AppleSpawner");
         appleSpawner = appleSpawnerObject.GetComponent<AppleSpawner>();
-        snakeBody.Enqueue(Instantiate(SnakePrefab, GridSystem.TranslateCoordinates(_position), Quaternion.identity));
-    }    
+        UpdateHead(GridSystem.TranslateCoordinates(_position));
+    }
 
-    private void FixedUpdate()
+    private void UpdateHead(Vector3 coords)
+    {        
+        if (snakeBody.Count > 0)
+        {
+            currentHead.SetIsHead(false);
+        }
+
+        var newHead = Instantiate(SnakePrefab, coords, Quaternion.identity);
+        var newHeadComponent = newHead.GetComponent<SnakePart>();
+        newHeadComponent.SetIsHead(true);
+        currentHead = newHeadComponent;
+        snakeBody.Enqueue(newHead);
+    }
+
+    
+    private void HandleNextMove()
     {
+        switch (lastValidKeyPress)
+        {
+            case KeyCode.UpArrow:
+                _direction = MoveDirection.Up;
+                break;
+            case KeyCode.DownArrow:
+                _direction = MoveDirection.Down;
+                break;
+            case KeyCode.RightArrow:
+                _direction = MoveDirection.Right;
+                break;
+            case KeyCode.LeftArrow:
+                _direction = MoveDirection.Left;
+                break;
+                //default:
+                //    _direction = MoveDirection.Up;
+                //    break;
+        }
         if (_direction == MoveDirection.Up)
         {
             _position.y += 1;
@@ -46,21 +81,31 @@ public class SnakeManager : MonoBehaviour
         {
             _position.x += 1;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        HandleNextMove();
+        if (Mathf.Abs(_position.x) >= 20 || Mathf.Abs(_position.y) >= 20)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
 
         var translatedCoords = GridSystem.TranslateCoordinates(_position);
 
         Collider[] hitColliders = Physics.OverlapBox(translatedCoords, new Vector3(0.1f, 0.1f, 0.1f), Quaternion.identity);
         if (hitColliders.Length == 0)
         {
-            var lastBodyPart = snakeBody.Dequeue();
-            Destroy(lastBodyPart);
-            snakeBody.Enqueue(Instantiate(SnakePrefab, translatedCoords, Quaternion.identity));
+            UpdateHead(translatedCoords);
+
+            var tail = snakeBody.Dequeue();
+            Destroy(tail);
         }
         if (hitColliders.Length == 1)
         {
             if (hitColliders[0].CompareTag("Apple"))
             {
-                snakeBody.Enqueue(Instantiate(SnakePrefab, translatedCoords, Quaternion.identity));
+                UpdateHead(translatedCoords);
                 appleSpawner.SpawnApple();
             }
             else
@@ -85,7 +130,7 @@ public class SnakeManager : MonoBehaviour
         {
             if (_direction != MoveDirection.Down)
             {
-                _direction = MoveDirection.Up;
+                lastValidKeyPress = KeyCode.UpArrow;
             }
         }
 
@@ -93,7 +138,7 @@ public class SnakeManager : MonoBehaviour
         {
             if (_direction != MoveDirection.Up)
             {
-                _direction = MoveDirection.Down;
+                lastValidKeyPress = KeyCode.DownArrow;
             }
         }
 
@@ -101,7 +146,7 @@ public class SnakeManager : MonoBehaviour
         {
             if (_direction != MoveDirection.Right)
             {
-                _direction = MoveDirection.Left;
+                lastValidKeyPress = KeyCode.LeftArrow;
             }
         }
 
@@ -109,7 +154,7 @@ public class SnakeManager : MonoBehaviour
         {
             if (_direction != MoveDirection.Left)
             {
-                _direction = MoveDirection.Right;
+                lastValidKeyPress = KeyCode.RightArrow;
             }
         }
     }

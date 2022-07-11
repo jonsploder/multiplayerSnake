@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3218761331765385013}
   - component: {fileID: 1500419023453149612}
   - component: {fileID: 956884075541806173}
+  - component: {fileID: 8576622525348593321}
   m_Layer: 0
   m_Name: SnakePart
   m_TagString: Untagged
@@ -97,3 +98,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8576622525348593321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7395593692685558916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d5d22ac6e32f6c408d8faaed5d99f89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snakeHeadMat: {fileID: 2100000, guid: 2bdadc3da666f48489e6d2a8034b3fc2, type: 2}
+  snakeBodyMat: {fileID: 2100000, guid: 8792a51e3c6a37d409ea82a33edf84b6, type: 2}
