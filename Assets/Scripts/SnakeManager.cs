@@ -86,12 +86,11 @@ public class SnakeManager : MonoBehaviour
     private void FixedUpdate()
     {
         HandleNextMove();
-        if (Mathf.Abs(_position.x) >= 20 || Mathf.Abs(_position.y) >= 20)
+        var translatedCoords = GridSystem.TranslateCoordinates(_position);
+        if (Mathf.Abs(translatedCoords.x) >= GridSystem.gridSize || Mathf.Abs(translatedCoords.z) >= GridSystem.gridSize)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-
-        var translatedCoords = GridSystem.TranslateCoordinates(_position);
 
         Collider[] hitColliders = Physics.OverlapBox(translatedCoords, new Vector3(0.1f, 0.1f, 0.1f), Quaternion.identity);
         if (hitColliders.Length == 0)

@@ -32,8 +32,8 @@ public class AppleSpawner : MonoBehaviour
 
         while (!foundEmptySpace)
         {
-            var x = Random.Range(-20, 20);
-            var y = Random.Range(-20, 20);
+            var x = Random.Range(-GridSystem.gridSize, GridSystem.gridSize);
+            var y = Random.Range(-GridSystem.gridSize, GridSystem.gridSize);
             coords = new Vector2(x, y);
 
             if (!Physics.CheckBox(GridSystem.TranslateCoordinates(coords), new Vector3(0.1f, 0.1f, 0.1f)))
