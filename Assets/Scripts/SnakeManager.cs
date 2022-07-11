@@ -25,8 +25,6 @@ public class SnakeManager : MonoBehaviour
         _direction = MoveDirection.Up;
         GameObject appleSpawnerObject = GameObject.Find("AppleSpawner");
         appleSpawner = appleSpawnerObject.GetComponent<AppleSpawner>();
-        // SnakePrefab.
-        // Instantiate(SnakePrefab, transform);
         snakeBody.Enqueue(Instantiate(SnakePrefab, GridSystem.TranslateCoordinates(_position), Quaternion.identity));
     }    
 
@@ -74,7 +72,6 @@ public class SnakeManager : MonoBehaviour
         {
             Debug.Log("Unexpectedly large collider list");
         }
-
     }
 
     private void Update()
