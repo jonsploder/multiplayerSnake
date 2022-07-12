@@ -9,9 +9,8 @@ public class SnakePart : MonoBehaviour
 
     bool isHead = false;
     bool animating = false;
-    float scale;
-    int calls = 0;
     MoveDirection moveDirection;
+    private Vector3 initialPosition;
 
     public void SetIsHead(bool head, MoveDirection direction)
     {
@@ -19,53 +18,68 @@ public class SnakePart : MonoBehaviour
 
         if (isHead)
         {
-            // StartCoroutine(Unscale());
             GetComponent<Renderer>().material = snakeHeadMat;
             animating = true;
-            scale = 0;
             moveDirection = direction;
+            initialPosition = transform.position;
+            // reset the origin, and flatting the scale initially
+            switch (moveDirection)
+            {
+                case MoveDirection.Left:
+                    transform.localScale = new Vector3(0, 1, 1);
+                    transform.position += Vector3.right * 0.5f;
+                    break;
+                case MoveDirection.Right:
+                    transform.localScale = new Vector3(0, 1, 1);
+                    transform.position += Vector3.left * 0.5f;
+                    break;
+                case MoveDirection.Up:
+                    transform.localScale = new Vector3(1, 1, 0);
+                    transform.position += Vector3.back * 0.5f;
+                    break;
+                case MoveDirection.Down:
+                    transform.localScale = new Vector3(1, 1, 0);
+                    transform.position += Vector3.forward * 0.5f;
+                    break;
+            }
+            Debug.Log("Created");
         }
         else
         {
             GetComponent<Renderer>().material = snakeBodyMat;
+            animating = false;
+            transform.localScale = Vector3.one;                
+            transform.position = initialPosition;
         }
     }
 
     private void Update()
     {
-        //var delta = Time.deltaTime;
-        //if (animating)
-        //{
-        //    scale += delta / Time.fixedDeltaTime;
-        //    calls += 1;
-        //    if (scale > 1)
-        //    {
-        //        animating = false;
-        //        scale = 1;
-        //        Debug.Log(calls);
-        //    }
-
-        //    // transform.localScale = new Vector3(scale, 1, 1);
-        //    var startScale = new Vector3(0, 1, 1);
-        //    var endScale = new Vector3(1, 1, 1);
-        //    transform.localScale = Vector3.Lerp(startScale, endScale, scale);
-        //}
-    }
-
-    private IEnumerator Unscale()
-    {
-        float ratio = 0;
-        int calls = 0;
-        float duration = 0.1f; // let's say we want a 2s animation
-        float start_time = Time.time; // time when the animation began
-        Vector3 initial_scale_value = transform.localScale;
-        do
+        var delta = Time.deltaTime;
+        if (animating)
         {
-            yield return new WaitForEndOfFrame(); // wait for next frame
-            ratio = (Time.time - start_time) / duration; // update the ratio value at every frame
-            transform.localScale = Vector3.Lerp(new Vector3(0, 1, 1), initial_scale_value, ratio); // apply the new scale
-            calls += 1;
-        } while (ratio < 1);
-        Debug.Log(calls);
+            var ratio = delta / Time.fixedDeltaTime;
+            // grow in scale towards the moveDirection
+            switch (moveDirection)
+            {
+                case MoveDirection.Left:
+                    transform.position += Vector3.left * ratio / 2;
+                    transform.localScale += Vector3.left * ratio; 
+                    break;
+                case MoveDirection.Right:
+                    transform.position += Vector3.right * ratio / 2;
+                    transform.localScale += Vector3.right * ratio;
+                    break;
+                case MoveDirection.Up:
+                    transform.position += Vector3.forward * ratio / 2;
+                    transform.localScale += Vector3.forward * ratio;
+                    break;
+                case MoveDirection.Down:
+                    transform.position += Vector3.back * ratio / 2;
+                    transform.localScale += Vector3.back * ratio;
+                    break;
+            }
+            Debug.Log("Scale: " + transform.localScale);
+        }
     }
 }

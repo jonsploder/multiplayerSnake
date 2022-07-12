@@ -28,9 +28,32 @@ public class SnakeManager : MonoBehaviour
         Array values = Enum.GetValues(typeof(MoveDirection));
         System.Random random = new System.Random();
         MoveDirection randomDirection = (MoveDirection)values.GetValue(random.Next(values.Length));
-        _direction = randomDirection;       
+        _direction = MoveDirection.Right; // randomDirection;       
 
+        var initialSize = 3; // including head
+        var initialBodyDirection = DirectionToVector2(_direction);
+        for (int i = initialSize - 1; i > 0; i -= 1)
+        {
+            UpdateHead(GridSystem.TranslateCoordinates(_position - initialBodyDirection * i));
+        }
         UpdateHead(GridSystem.TranslateCoordinates(_position));
+    }
+
+    private Vector2 DirectionToVector2(MoveDirection direction)
+    {
+        switch (direction)
+        {
+            case MoveDirection.Left:
+                return Vector2.left;
+            case MoveDirection.Right:
+                return Vector2.right;
+            case MoveDirection.Up:
+                return Vector2.up;
+            case MoveDirection.Down:                    
+                return Vector2.down;
+            default:
+                throw new Exception("Retard");
+        }
     }
 
     private void UpdateHead(Vector3 coords)
@@ -113,7 +136,7 @@ public class SnakeManager : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
         if (hitColliders.Length > 1)
