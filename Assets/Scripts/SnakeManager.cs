@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,13 +19,18 @@ public class SnakeManager : MonoBehaviour
     private MoveDirection _direction;
     private Vector2 _position;
     public AppleSpawner appleSpawner;
+    public GameObject snakeHeadRef;
     public Queue<GameObject> snakeBody = new Queue<GameObject>();
     KeyCode lastValidKeyPress;
     SnakePart currentHead;
 
     void Start()
-    {
-        _direction = MoveDirection.Up;
+    {        
+        Array values = Enum.GetValues(typeof(MoveDirection));
+        System.Random random = new System.Random();
+        MoveDirection randomDirection = (MoveDirection)values.GetValue(random.Next(values.Length));
+        _direction = randomDirection;
+
         GameObject appleSpawnerObject = GameObject.Find("AppleSpawner");
         appleSpawner = appleSpawnerObject.GetComponent<AppleSpawner>();
         UpdateHead(GridSystem.TranslateCoordinates(_position));
@@ -36,6 +42,8 @@ public class SnakeManager : MonoBehaviour
         {
             currentHead.SetIsHead(false);
         }
+
+        snakeHeadRef.transform.position = coords;
 
         var newHead = Instantiate(SnakePrefab, coords, Quaternion.identity);
         var newHeadComponent = newHead.GetComponent<SnakePart>();
