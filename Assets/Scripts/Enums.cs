@@ -11,3 +11,10 @@ public enum MoveDirection
     Down,
     Left,
 }
+
+public enum AnimateState
+{
+    None,
+    Head,
+    Tail
+}

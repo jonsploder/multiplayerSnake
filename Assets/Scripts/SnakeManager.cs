@@ -57,19 +57,32 @@ public class SnakeManager : MonoBehaviour
     }
 
     private void UpdateHead(Vector3 coords)
-    {        
+    {
+        var oldHead = currentHead;
         if (snakeBody.Count > 0)
         {
-            currentHead.SetIsHead(false, _direction);
+            oldHead.SetIsBody();
         }
 
         var newHead = Instantiate(SnakePrefab, coords, Quaternion.identity);
         var newHeadComponent = newHead.GetComponent<SnakePart>();
-        newHeadComponent.SetIsHead(true, _direction);
+        newHeadComponent.SetIsHead(_direction);
         currentHead = newHeadComponent;
         snakeBody.Enqueue(newHead);
+
+        // oldHead.SetNextPart(currentHead);
+        // currentHead.SetPreviousPart(oldHead);
     }
 
+    private void UpdateTail()
+    {
+        var tail = snakeBody.Dequeue();
+        Destroy(tail);
+
+        var newTail = snakeBody.Peek();
+        var newTailComponent = newTail.GetComponent<SnakePart>();
+        newTailComponent.SetIsTail();
+    }
     
     private void HandleNextMove()
     {
@@ -122,9 +135,7 @@ public class SnakeManager : MonoBehaviour
         if (hitColliders.Length == 0)
         {
             UpdateHead(translatedCoords);
-
-            var tail = snakeBody.Dequeue();
-            Destroy(tail);
+            UpdateTail();
         }
         if (hitColliders.Length == 1)
         {
@@ -151,6 +162,7 @@ public class SnakeManager : MonoBehaviour
         var currentPosition = snakeHeadRef.transform.position;
         var nextPosition = currentHead.transform.position;
         // Time.sinceLastFixedDeltaTime / Time.fixedDeltaTime
+        //deltatiume/fixedtime
         snakeHeadRef.transform.position = Vector3.Lerp(currentPosition, nextPosition, delta * 5);
 
         HandleInput();
