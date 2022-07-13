@@ -8,9 +8,9 @@ public class SnakePart : MonoBehaviour
     public Material snakeBodyMat;
     public Material snakeTailMat;
 
-    AnimateState animateState = AnimateState.None;
     public MoveDirection moveDirection;
 
+    private SnakePartType partType;
     private SnakePart previousPart;
     private SnakePart nextPart;
 
@@ -20,12 +20,12 @@ public class SnakePart : MonoBehaviour
 
     public void SetIsHead(MoveDirection direction)
     {
-        animateState = AnimateState.Head;
+        partType = SnakePartType.Head;
         GetComponent<Renderer>().material = snakeHeadMat;
         moveDirection = direction;
         initialPosition = transform.position;
         SetNextPart(null);
-        // reset the origin, and flatting the scale initially
+        // reset the origin, and flatting the scale initially before growing along the scale
         switch (moveDirection)
         {
             case MoveDirection.Left:
@@ -49,7 +49,7 @@ public class SnakePart : MonoBehaviour
 
     public void SetIsBody()
     {
-        animateState = AnimateState.None;
+        partType = SnakePartType.Body;
         GetComponent<Renderer>().material = snakeBodyMat;
         transform.localScale = Vector3.one;
         transform.position = initialPosition;
@@ -57,7 +57,7 @@ public class SnakePart : MonoBehaviour
 
     public void SetIsTail()
     {
-        animateState = AnimateState.Tail;
+        partType = SnakePartType.Tail;
         GetComponent<Renderer>().material = snakeTailMat;
         SetPreviousPart(null);
     }
@@ -66,11 +66,12 @@ public class SnakePart : MonoBehaviour
     {
         var delta = Time.deltaTime;
 
-        if (animateState != AnimateState.None)
+        if (partType != SnakePartType.Body)
         {
             var ratio = Mathf.Clamp01(delta / Time.fixedDeltaTime);
-            // grow in scale towards the moveDirection
-            var direction = (animateState == AnimateState.Tail) ? nextPart.moveDirection : moveDirection;
+            // grow in scale towards the moveDirection if we're not a 'corner tail'
+            // otherwise if a corner tail, then 'shrink' according to the part in front of us
+            var direction = (partType == SnakePartType.Tail) ? nextPart.moveDirection : moveDirection;
             switch (direction)
             {
                 case MoveDirection.Left:
@@ -95,11 +96,11 @@ public class SnakePart : MonoBehaviour
 
     private void ScaleXAxis(float ratio)
     {
-        if (animateState == AnimateState.Head)
+        if (partType == SnakePartType.Head)
         {
             transform.localScale += xAxis * ratio;
         }
-        else if (animateState == AnimateState.Tail)
+        else if (partType == SnakePartType.Tail)
         {
             transform.localScale -= xAxis * ratio;
         }
@@ -107,11 +108,11 @@ public class SnakePart : MonoBehaviour
 
     private void ScaleZAxis(float ratio)
     {
-        if (animateState == AnimateState.Head)
+        if (partType == SnakePartType.Head)
         {
             transform.localScale += zAxis * ratio;
         }
-        else if (animateState == AnimateState.Tail)
+        else if (partType == SnakePartType.Tail)
         {
             transform.localScale -= zAxis * ratio;
         }

@@ -12,9 +12,9 @@ public enum MoveDirection
     Left,
 }
 
-public enum AnimateState
+public enum SnakePartType
 {
-    None,
     Head,
-    Tail
+    Body,
+    Tail,
 }
