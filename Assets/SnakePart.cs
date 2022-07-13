@@ -9,7 +9,7 @@ public class SnakePart : MonoBehaviour
     public Material snakeTailMat;
 
     AnimateState animateState = AnimateState.None;
-    MoveDirection moveDirection;
+    public MoveDirection moveDirection;
 
     private SnakePart previousPart;
     private SnakePart nextPart;
@@ -70,7 +70,8 @@ public class SnakePart : MonoBehaviour
         {
             var ratio = delta / Time.fixedDeltaTime;
             // grow in scale towards the moveDirection
-            switch (moveDirection)
+            var direction = (animateState == AnimateState.Tail) ? nextPart.moveDirection : moveDirection;
+            switch (direction)
             {
                 case MoveDirection.Left:
                     transform.position += Vector3.left * ratio / 2;

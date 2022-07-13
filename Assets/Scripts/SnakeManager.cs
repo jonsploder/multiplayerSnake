@@ -56,7 +56,7 @@ public class SnakeManager : MonoBehaviour
             case MoveDirection.Down:                    
                 return Vector2.down;
             default:
-                throw new Exception("Retard");
+                throw new Exception("Wrong");
         }
     }
 
