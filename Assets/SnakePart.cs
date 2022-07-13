@@ -68,7 +68,7 @@ public class SnakePart : MonoBehaviour
 
         if (animateState != AnimateState.None)
         {
-            var ratio = delta / Time.fixedDeltaTime;
+            var ratio = Mathf.Clamp01(delta / Time.fixedDeltaTime);
             // grow in scale towards the moveDirection
             var direction = (animateState == AnimateState.Tail) ? nextPart.moveDirection : moveDirection;
             switch (direction)

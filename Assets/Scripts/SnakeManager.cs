@@ -28,7 +28,7 @@ public class SnakeManager : MonoBehaviour
         Array values = Enum.GetValues(typeof(MoveDirection));
         System.Random random = new System.Random();
         MoveDirection randomDirection = (MoveDirection)values.GetValue(random.Next(values.Length));
-        _direction = MoveDirection.Right; // randomDirection;       
+        _direction = randomDirection;       
 
         var initialSize = 5; // including head, but because the tail and the head are expanding, size 3 looks like 2 for example
         var initialBodyDirection = DirectionToVector2(_direction);
@@ -41,6 +41,7 @@ public class SnakeManager : MonoBehaviour
         var tail = snakeBody.Peek();
         var tailComponent = tail.GetComponent<SnakePart>();
         tailComponent.SetIsTail();
+        snakeHeadRef.transform.position = currentHead.transform.position;
     }
 
     private Vector2 DirectionToVector2(MoveDirection direction)
@@ -168,9 +169,7 @@ public class SnakeManager : MonoBehaviour
         float delta = Time.deltaTime;
         var currentPosition = snakeHeadRef.transform.position;
         var nextPosition = currentHead.transform.position;
-        // Time.sinceLastFixedDeltaTime / Time.fixedDeltaTime
-        //deltatiume/fixedtime
-        snakeHeadRef.transform.position = Vector3.Lerp(currentPosition, nextPosition, delta * 5);
+        snakeHeadRef.transform.position = Vector3.Lerp(currentPosition, nextPosition, Mathf.Clamp01(delta / Time.fixedDeltaTime));
 
         HandleInput();
     }
