@@ -43,24 +43,6 @@ public class SnakeManager : MonoBehaviour
         tailComponent.SetIsTail();
         snakeHeadRef.transform.position = currentHead.transform.position;
     }
-
-    private Vector2 DirectionToVector2(MoveDirection direction)
-    {
-        switch (direction)
-        {
-            case MoveDirection.Left:
-                return Vector2.left;
-            case MoveDirection.Right:
-                return Vector2.right;
-            case MoveDirection.Up:
-                return Vector2.up;
-            case MoveDirection.Down:                    
-                return Vector2.down;
-            default:
-                throw new Exception("Wrong");
-        }
-    }
-
     private void UpdateHead(Vector3 coords)
     {
         var oldHead = currentHead;
@@ -208,5 +190,22 @@ public class SnakeManager : MonoBehaviour
             }
         }
     }
+    private Vector2 DirectionToVector2(MoveDirection direction)
+    {
+        switch (direction)
+        {
+            case MoveDirection.Left:
+                return Vector2.left;
+            case MoveDirection.Right:
+                return Vector2.right;
+            case MoveDirection.Up:
+                return Vector2.up;
+            case MoveDirection.Down:
+                return Vector2.down;
+            default:
+                throw new Exception("Wrong");
+        }
+    }
+
 
 }
