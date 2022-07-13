@@ -110,5 +110,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d5d22ac6e32f6c408d8faaed5d99f89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snakeHeadMat: {fileID: 2100000, guid: 8792a51e3c6a37d409ea82a33edf84b6, type: 2}
+  snakeHeadMat: {fileID: 2100000, guid: 2bdadc3da666f48489e6d2a8034b3fc2, type: 2}
   snakeBodyMat: {fileID: 2100000, guid: 8792a51e3c6a37d409ea82a33edf84b6, type: 2}
+  snakeTailMat: {fileID: 2100000, guid: 5e75ff87262d58e46978106fe3feaf57, type: 2}

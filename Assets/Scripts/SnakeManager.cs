@@ -15,7 +15,7 @@ public class SnakeManager : MonoBehaviour
     private MoveDirection _direction;
     private Vector2 _position;
     KeyCode lastValidKeyPress;
-    SnakePart currentHead;
+    SnakePart currentHead = null;
 
     void Start()
     {
@@ -30,13 +30,17 @@ public class SnakeManager : MonoBehaviour
         MoveDirection randomDirection = (MoveDirection)values.GetValue(random.Next(values.Length));
         _direction = MoveDirection.Right; // randomDirection;       
 
-        var initialSize = 3; // including head
+        var initialSize = 5; // including head, but because the tail and the head are expanding, size 3 looks like 2 for example
         var initialBodyDirection = DirectionToVector2(_direction);
         for (int i = initialSize - 1; i > 0; i -= 1)
         {
             UpdateHead(GridSystem.TranslateCoordinates(_position - initialBodyDirection * i));
         }
         UpdateHead(GridSystem.TranslateCoordinates(_position));
+
+        var tail = snakeBody.Peek();
+        var tailComponent = tail.GetComponent<SnakePart>();
+        tailComponent.SetIsTail();
     }
 
     private Vector2 DirectionToVector2(MoveDirection direction)
@@ -70,8 +74,11 @@ public class SnakeManager : MonoBehaviour
         currentHead = newHeadComponent;
         snakeBody.Enqueue(newHead);
 
-        // oldHead.SetNextPart(currentHead);
-        // currentHead.SetPreviousPart(oldHead);
+        if (oldHead != null)
+        {
+            oldHead.SetNextPart(currentHead);
+        }
+        currentHead.SetPreviousPart(oldHead);
     }
 
     private void UpdateTail()
@@ -147,7 +154,7 @@ public class SnakeManager : MonoBehaviour
             }
             else
             {
-                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
         if (hitColliders.Length > 1)

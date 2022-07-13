@@ -6,8 +6,8 @@ public class SnakePart : MonoBehaviour
 {
     public Material snakeHeadMat;
     public Material snakeBodyMat;
+    public Material snakeTailMat;
 
-    bool isHead = false;
     AnimateState animateState = AnimateState.None;
     MoveDirection moveDirection;
 
@@ -20,12 +20,11 @@ public class SnakePart : MonoBehaviour
 
     public void SetIsHead(MoveDirection direction)
     {
-        isHead = true;
-        GetComponent<Renderer>().material = snakeHeadMat;
         animateState = AnimateState.Head;
+        GetComponent<Renderer>().material = snakeHeadMat;
         moveDirection = direction;
         initialPosition = transform.position;
-        // SetNextPart(null);
+        SetNextPart(null);
         // reset the origin, and flatting the scale initially
         switch (moveDirection)
         {
@@ -50,9 +49,8 @@ public class SnakePart : MonoBehaviour
 
     public void SetIsBody()
     {
-        isHead = false;
-        GetComponent<Renderer>().material = snakeBodyMat;
         animateState = AnimateState.None;
+        GetComponent<Renderer>().material = snakeBodyMat;
         transform.localScale = Vector3.one;
         transform.position = initialPosition;
     }
@@ -60,8 +58,8 @@ public class SnakePart : MonoBehaviour
     public void SetIsTail()
     {
         animateState = AnimateState.Tail;
-        isHead = false;
-        // SetPreviousPart(null);
+        GetComponent<Renderer>().material = snakeTailMat;
+        SetPreviousPart(null);
     }
 
     private void Update()
